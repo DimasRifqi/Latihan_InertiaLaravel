@@ -7,4 +7,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('/Mahasiswa', MahasiswaController::class);
+Route::get('/mahasiswa/add', [MahasiswaController::class, 'formAdd']);
+// Route::post('/mahasiswa', [MahasiswaController::class, 'store']);
+Route::resource('/mahasiswa', MahasiswaController::class);
