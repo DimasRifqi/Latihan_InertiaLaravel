@@ -63,7 +63,13 @@ class MahasiswaController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $mahasiswa = Mahasiswa::find($id);
+        if($mahasiswa){
+            return Inertia::render('Mahasiswa/FormEdit', [
+                'id' => $id,
+                'mhs'=> $mahasiswa
+            ]);
+        }
     }
 
     /**
@@ -79,7 +85,23 @@ class MahasiswaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validateData = $request->validate([
+            'tnama' => 'required',
+            'tjk' => 'required',
+            'talamat' => 'required',
+        ],[], [
+            'tnama' => 'Nama Lengkap',
+            'tjk' => 'Jenis Kelamin',
+            'talamat' => 'Alamat Lengkap',
+        ]);
+
+        $mahasiswa = Mahasiswa::find($id);
+        $mahasiswa->nama_lengkap = $validateData['tnama'];
+        $mahasiswa->jk = $validateData['tjk'];
+        $mahasiswa->alamat = $validateData['talamat'];
+        $mahasiswa->save();
+
+        return redirect()->route('mahasiswa.index')->with('message','Data Mahasiswa dengan NPM :'. $mahasiswa->npm .' berhasil diupdate...');
     }
 
     /**
@@ -87,6 +109,10 @@ class MahasiswaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $mahasiswa = Mahasiswa::findOrFail($id);
+        $npm = $mahasiswa->npm;
+        $mahasiswa->delete();
+
+        return redirect()->route('mahasiswa.index')->with('message', 'Data Dengan NPM : '. $npm .' berhasil dihapus');
     }
 }
